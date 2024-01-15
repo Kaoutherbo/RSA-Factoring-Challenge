@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+
+import sys
+import math
+
+
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+
+def f(x, n):
+    return (x**2 + 1) % n
+
+
+def pollards_rho(n):
+    x = 2
+    y = 2
+    d = 1
+
+    while d == 1:
+        x = f(x, n)
+        y = f(f(y, n), n)
+        d = gcd(abs(x - y), n)
+
+    return d
+
+
+def factorize_rsa(number):
+    p = pollards_rho(number)
+    q = number // p
+    return p, q
+
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: rsa <file>")
+        return
+
+    input_file = sys.argv[1]
+    try:
+        with open(input_file, 'r') as file:
+            for line in file:
+                number = int(line.strip())
+                p, q = factorize_rsa(number)
+                print(f"{number}={p}*{q}")
+    except FileNotFoundError:
+        print(f"Error: File '{input_file}' not found.")
+    except ValueError:
+        print(f"Error: Invalid input in '{input_file}'.")
+
+
+if __name__ == "__main__":
+    main()
