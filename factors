@@ -1,54 +1,32 @@
-#!/usr/bin/python3
-"""
-This modual is to Factorize as many numbers as possible
-"""
+#!/usr/bin/env python3
+
 import sys
-import time
 
 
-def fact(n):
-    """
-    This function returns the Factorize numbers
-
-    Args:
-        n (int): the input number to Factorize
-    Return:
-        The Factoriz Number
-    """
-    f = []
-    for k in range(2, int(n / 2) + 1):
-        if n % k == 0:
-            b = k
-            c = int(n / k)
-            f.append(c)
-            f.append(b)
-            return f
-            break
-    return None
+def factorize(number):
+    for i in range(2, number):
+        if number % i == 0:
+            return i, number // i
+    return number, 1
 
 
 def main():
-    """
-    This main function
-
-    Raises:
-        FileNotFoundError: if the file don't exist
-    """
     if len(sys.argv) != 2:
         print("Usage: factors <file>")
-        exit()
+        return
+
+    input_file = sys.argv[1]
     try:
-        file = open(sys.argv[1], "r")
-        a = file.readlines()
-        s = time.time()
-        for i in range(0, len(a)):
-            a[i] = int(a[i])
-            f = fact(a[i])
-            print(f"{a[i]:d}={f[0]:d}*{f[1]:d}")
-            if time.time() - s > 5:
-                exit("out of the time")
+        with open(input_file, 'r') as file:
+            for line in file:
+                number = int(line.strip())
+                p, q = factorize(number)
+                print(f"{number}={p}*{q}")
     except FileNotFoundError:
-        print(f"Error: '{sys.argv[1]}' does not exist")
+        print(f"Error: File '{input_file}' not found.")
+    except ValueError:
+        print(f"Error: Invalid input in '{input_file}'.")
 
 
-main()
+if __name__ == "__main__":
+    main()
